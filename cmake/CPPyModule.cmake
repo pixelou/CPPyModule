@@ -1,3 +1,6 @@
+# author: Nicolas Granger <nicolas.granger@telecom-sudparis.eu>
+
+
 set(this_file_directory ${CMAKE_CURRENT_LIST_DIR})
 
 include(CMakeParseArguments)
@@ -12,7 +15,7 @@ function(as_python_module TARGET_NAME)
 #    HEADERS file1.hpp [file2.hpp ...]
 #    [SOURCES file1.cpp [file2.cpp ...]])
 # 
-# `as_python_module creates` a binary python module from C++ source files. It 
+# `as_python_module` creates a binary python module from C++ source files. It 
 # relies on the header parsing tools from the OpenCV project, and thus uses 
 # the same conventions (TODO: add link to the conventions).
 # The cmake target is specified as the first argument.
