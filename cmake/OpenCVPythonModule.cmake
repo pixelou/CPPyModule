@@ -71,7 +71,7 @@ function(as_python_module TARGET_NAME)
             ${gen_files_path}/pyopencv_generated_types.h
         DEPENDS ${ARG_HEADERS}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMAND ${this_file_directory}/gen2.py
+        COMMAND ${this_file_directory}/bin/gen2.py
             ${gen_files_path}
             ${gen_files_path}/headers.txt
             ${ARG_NAMESPACE}
@@ -85,17 +85,13 @@ function(as_python_module TARGET_NAME)
             ${gen_files_path}/pyopencv_generated_type_reg.h
             ${gen_files_path}/pyopencv_generated_types.h)
 
-    # Generate configuration file
-#    configure_file(${this_file_directory}/module_config.h.in
-#        ${gen_files_path}/module_config.h)
-
     # Copy additional sources
-    file(COPY ${this_file_directory}/module.cpp
-            ${this_file_directory}/pycompat.hpp
-            ${this_file_directory}/py_cv_converters.hpp
-            ${this_file_directory}/utils.hpp
+    file(COPY ${this_file_directory}/src/module.cpp
+            ${this_file_directory}/src/pycompat.hpp
+            ${this_file_directory}/src/py_cv_converters.hpp
+            ${this_file_directory}/src/utils.hpp
         DESTINATION ${gen_files_path})
-    configure_file(${this_file_directory}/init_func.cpp.in
+    configure_file(${this_file_directory}/src/init_func.cpp.in
         ${gen_files_path}/init_func.cpp)
 
     # Module compilation ------------------------------------------------------
@@ -125,7 +121,7 @@ function(as_python_module TARGET_NAME)
 
     # Output file name --------------------------------------------------------
     
-    if(WIN32 OR CYGWIN)
+    if(WIN32 AND NOT CYGWIN)
         set(module_extension ".pyd")
     else()
         set(module_extension ".so")
@@ -136,3 +132,4 @@ function(as_python_module TARGET_NAME)
         EXTENSION ${module_extension})
 
 endfunction()
+
