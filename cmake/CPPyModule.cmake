@@ -5,6 +5,7 @@ set(this_file_directory ${CMAKE_CURRENT_LIST_DIR})
 
 include(CMakeParseArguments)
 find_package(OpenCV REQUIRED)
+find_package(PythonInterp REQUIRED)
 find_package(PythonLibs REQUIRED)
 
 
@@ -136,3 +137,13 @@ function(as_python_module TARGET_NAME)
 
 endfunction()
 
+
+function(install_module TARGET_NAME)
+    if(WIN32) # is cygwin even supported?
+        install(TARGETS ${TARGET_NAME}
+            RUNTIME DESTINATION lib/site-packages)
+    else()
+        install(TARGETS ${TARGET_NAME} 
+            LIBRARY DESTINATION lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages)
+    endif()
+endfunction()

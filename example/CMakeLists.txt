@@ -2,17 +2,10 @@ cmake_minimum_required(VERSION 3.0)
 project(GeneralizedDistanceTransform)
 
 
-# Settings --------------------------------------------------------------------
-
-set(PYTHON_VERSION "" CACHE STRING "Desired python version for the bindings")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wl,--no-undefined -O0 -Wall")
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-
 # Dependencies ----------------------------------------------------------------
 
 find_package(OpenCV REQUIRED)
-include(cmake/OpenCVPythonModule.cmake)
+include(cmake/CPPyModule.cmake)
 
 
 # Import or compile external project ------------------------------------------
@@ -20,23 +13,25 @@ include(cmake/OpenCVPythonModule.cmake)
 add_library(flipping SHARED
     some_project/flipping.cpp)
 target_include_directories(flipping PUBLIC
-  ${OpenCV_INCLUDE_DIRS})
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/some_project>
+    $<INSTALL_INTERFACE:include/some_project>
+    ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(flipping
     ${OpenCV_LIBS})
-set_property(TARGET flipping
-    PROPERTY INTERFACE_POSITION_INDEPENDENT_CODE ON)
+#set_property(TARGET flipping
+#    PROPERTY INTERFACE_POSITION_INDEPENDENT_CODE ON)
 
 
 # Python module binding -------------------------------------------------------
 
 as_python_module(pyflipping_module
+    # root wrapping namespace in the c++ wrappers
     NAMESPACE flipping
-    # This is the name of the python module and of the wrapping namespace in 
-    # the c++ wrappers.
+    # name of the python module
     MODULE_NAME pyflipping
-    # Specify headers to parse for exported symbols
+    # headers to parse for exported symbols
     HEADERS flipping_wrapper.h
-    # Specify source files of wrapping functions
+    # source files of wrapping functions
     SOURCES flipping_wrapper.cpp
     )
 target_link_libraries(pyflipping_module flipping)
@@ -44,10 +39,13 @@ target_link_libraries(pyflipping_module flipping)
 
 # Install ---------------------------------------------------------------------
 
-# TODO
+install(TARGETS flipping
+    EXPORT flipping_tgt
+    RUNTIME DESTINATION lib
+    LIBRARY DESTINATION lib
+    PUBLIC_HEADER DESTINATION include/flipping)
+install(EXPORT flipping_tgt 
+    FILE flipping.cmake
+    DESTINATION lib/cmake/flipping)
 
-
-# Testing ---------------------------------------------------------------------
-    
-# TODO
-
+install_module(pyflipping_module)
