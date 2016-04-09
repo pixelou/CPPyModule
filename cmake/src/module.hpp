@@ -1,7 +1,7 @@
 /*
-The content of this file has been taken from the OpenCV project at 
+The content of this file has been taken from the OpenCV project at
 https:github.com/Itseez/opencv
-It has been modified to make it more reusable for generating binding on other 
+It has been modified to make it more reusable for generating binding on other
 projects.
 modifications: Nicolas Granger <nicolas.granger@telecom-sudparis.eu>
 
@@ -54,16 +54,15 @@ the use of this software, even if advised of the possibility of such damage.
 #include <Python.h>
 #include "pycompat.hpp"
 
-#define MODULESTR "cv2"
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
+#include "opencv2/core/core_c.h"
 #include "pyopencv_generated_include.h"
 
 #include "opencv2/opencv_modules.hpp"
 
 #include "utils.hpp"
 #include "py_cv_converters.hpp"
-
 
 using namespace cv;
 
@@ -131,5 +130,3 @@ static int to_ok(PyTypeObject *to)
   to->tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
   return (PyType_Ready(to) == 0);
 }
-
-#include "init_func.cpp"
